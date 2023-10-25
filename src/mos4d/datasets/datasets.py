@@ -51,30 +51,31 @@ class KittiSequentialModule(LightningDataModule):
         test_set = KittiSequentialDataset(self.cfg, split="test")
 
         ########## Generate dataloaders and iterables
+        if(self.cfg['DATA']['SPLIT']['TRAIN']!=[]):
+            self.train_loader = DataLoader(
+                dataset=train_set,
+                batch_size=self.cfg["TRAIN"]["BATCH_SIZE"],
+                collate_fn=self.collate_fn,
+                shuffle=self.cfg["DATA"]["SHUFFLE"],
+                num_workers=self.cfg["DATA"]["NUM_WORKER"],
+                pin_memory=True,
+                drop_last=False,
+                timeout=0,
+            )
 
-        self.train_loader = DataLoader(
-            dataset=train_set,
-            batch_size=self.cfg["TRAIN"]["BATCH_SIZE"],
-            collate_fn=self.collate_fn,
-            shuffle=self.cfg["DATA"]["SHUFFLE"],
-            num_workers=self.cfg["DATA"]["NUM_WORKER"],
-            pin_memory=True,
-            drop_last=False,
-            timeout=0,
-        )
-        self.train_iter = iter(self.train_loader)
-
-        self.valid_loader = DataLoader(
-            dataset=val_set,
-            batch_size=self.cfg["TRAIN"]["BATCH_SIZE"],
-            collate_fn=self.collate_fn,
-            shuffle=False,
-            num_workers=self.cfg["DATA"]["NUM_WORKER"],
-            pin_memory=True,
-            drop_last=False,
-            timeout=0,
-        )
-        self.valid_iter = iter(self.valid_loader)
+            self.train_iter = iter(self.train_loader)
+        if(self.cfg['DATA']['SPLIT']['VAL']!=[]):
+            self.valid_loader = DataLoader(
+                dataset=val_set,
+                batch_size=self.cfg["TRAIN"]["BATCH_SIZE"],
+                collate_fn=self.collate_fn,
+                shuffle=False,
+                num_workers=self.cfg["DATA"]["NUM_WORKER"],
+                pin_memory=True,
+                drop_last=False,
+                timeout=0,
+            )
+            self.valid_iter = iter(self.valid_loader)
 
         self.test_loader = DataLoader(
             dataset=test_set,
@@ -126,7 +127,6 @@ class KittiSequentialDataset(Dataset):
         """
         self.cfg = cfg
         self.root_dir = os.environ.get("DATA")
-
         # Pose information
         self.transform = self.cfg["DATA"]["TRANSFORM"]
         self.poses = {}

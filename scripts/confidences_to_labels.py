@@ -90,7 +90,6 @@ def main(path, strategy, sequence, prior, dt):
                     else:
                         dict_confidences[pred_idx].append(path_to_confidence)
                     dict_confidences[pred_idx].sort()
-
         # Use all scans as prediction
         if strategy == "non-overlapping":
             for pred_idx, confidences in tqdm(dict_confidences.items(), desc="Scans"):
