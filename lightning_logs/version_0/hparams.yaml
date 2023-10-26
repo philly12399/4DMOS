@@ -1,0 +1,31 @@
+DATA:
+  DATAPATH: /mydata/0825mini_bin/sequences/
+  DELTA_T_DATA: 0.1
+  NUM_WORKER: 8
+  POSES: no_poses
+  SEMANTIC_CONFIG_FILE: ./config/wayside.yaml
+  SHUFFLE: false
+  SPLIT:
+    TEST:
+    - 0
+    TRAIN:
+    - null
+    VAL:
+    - null
+  TRANSFORM: false
+  VOXEL_SIZE: 0.1
+EXPERIMENT:
+  ID: wayside_0825_mini
+MODEL:
+  DELTA_T_PREDICTION: 0.1
+  N_PAST_STEPS: 10
+  WEIGHT: /mydata/4dmos_ckpt/10_scans.ckpt
+TRAIN:
+  ACC_BATCHES: 1
+  AUGMENTATION: true
+  BATCH_SIZE: 1
+  LR: 0.0001
+  LR_DECAY: 0.99
+  LR_EPOCH: 1
+  MAX_EPOCH: 60
+  WEIGHT_DECAY: 0.0001

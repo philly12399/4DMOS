@@ -44,14 +44,10 @@ class KittiSequentialModule(LightningDataModule):
         """Dataloader and iterators for training, validation and test data"""
 
         ########## Point dataset splits
-        train_set = KittiSequentialDataset(self.cfg, split="train")
-
-        val_set = KittiSequentialDataset(self.cfg, split="val")
-
-        test_set = KittiSequentialDataset(self.cfg, split="test")
-
+        dataset_len=[0,0,0]
         ########## Generate dataloaders and iterables
-        if(self.cfg['DATA']['SPLIT']['TRAIN']!=[]):
+        if(self.cfg['DATA']['SPLIT']['TRAIN']!=[None]):
+            train_set = KittiSequentialDataset(self.cfg, split="train")
             self.train_loader = DataLoader(
                 dataset=train_set,
                 batch_size=self.cfg["TRAIN"]["BATCH_SIZE"],
@@ -62,9 +58,10 @@ class KittiSequentialModule(LightningDataModule):
                 drop_last=False,
                 timeout=0,
             )
-
             self.train_iter = iter(self.train_loader)
-        if(self.cfg['DATA']['SPLIT']['VAL']!=[]):
+            dataset_len[0] = len(train_set)
+        if(self.cfg['DATA']['SPLIT']['VAL']!=[None]):
+            val_set = KittiSequentialDataset(self.cfg, split="val")
             self.valid_loader = DataLoader(
                 dataset=val_set,
                 batch_size=self.cfg["TRAIN"]["BATCH_SIZE"],
@@ -76,24 +73,26 @@ class KittiSequentialModule(LightningDataModule):
                 timeout=0,
             )
             self.valid_iter = iter(self.valid_loader)
-
-        self.test_loader = DataLoader(
-            dataset=test_set,
-            batch_size=self.cfg["TRAIN"]["BATCH_SIZE"],
-            collate_fn=self.collate_fn,
-            shuffle=False,
-            num_workers=self.cfg["DATA"]["NUM_WORKER"],
-            pin_memory=True,
-            drop_last=False,
-            timeout=0,
-        )
-        self.test_iter = iter(self.test_loader)
+            dataset_len[1] = len(val_set)
+        if(self.cfg['DATA']['SPLIT']['TEST']!=[None]):
+            test_set = KittiSequentialDataset(self.cfg, split="test")
+            self.test_loader = DataLoader(
+                dataset=test_set,
+                batch_size=self.cfg["TRAIN"]["BATCH_SIZE"],
+                collate_fn=self.collate_fn,
+                shuffle=False,
+                num_workers=self.cfg["DATA"]["NUM_WORKER"],
+                pin_memory=True,
+                drop_last=False,
+                timeout=0,
+            )
+            self.test_iter = iter(self.test_loader)
+            dataset_len[2] = len(test_set)
 
         print(
             "Loaded {:d} training, {:d} validation and {:d} test samples.".format(
-                len(train_set), len(val_set), (len(test_set))
+                dataset_len[0], dataset_len[1], dataset_len[2])
             )
-        )
 
     def train_dataloader(self):
         return self.train_loader
@@ -126,7 +125,9 @@ class KittiSequentialDataset(Dataset):
             Exception: [description]
         """
         self.cfg = cfg
-        self.root_dir = os.environ.get("DATA")
+        # self.root_dir = os.environ.get("DATA")
+        self.root_dir = cfg["DATA"]["DATAPATH"]
+
         # Pose information
         self.transform = self.cfg["DATA"]["TRANSFORM"]
         self.poses = {}

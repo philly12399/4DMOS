@@ -1,19 +1,23 @@
 EXPERIMENT:
-  ID: YourID # Give your logs and model a unique name
+  ID: "wayside_0825_mini" # Give your logs and model a unique name
 
 ##Data
 DATA:
   TRANSFORM: False # If true, the points are pose-aligned before feeding to the model
-  POSES: "poses.txt" # Name of the pose file provided in each sequence folder
-  SHUFFLE: True
-  NUM_WORKER: 4
+  POSES: "no_poses" # Name of the pose file provided in each sequence folder
+  SHUFFLE: False
+  NUM_WORKER: 8
   DELTA_T_DATA: 0.1 # Time between scans in the dataset (0.1s for KITTI)
   VOXEL_SIZE: 0.1 # Used for discretization in x,y,z when creating a sparse tensor 
   SEMANTIC_CONFIG_FILE: "./config/wayside.yaml" 
   SPLIT:
+    TRAIN:
+      -
+    VAL:
+      -
     TEST:
       - 0
- 
+  DATAPATH: "/mydata/0825mini/skitti-format/sequences/" #path/to/dataset/sequences
 ##Training
 TRAIN:
   MAX_EPOCH: 60
@@ -21,7 +25,7 @@ TRAIN:
   LR_EPOCH: 1
   LR_DECAY: 0.99
   WEIGHT_DECAY: 0.0001
-  BATCH_SIZE: 2
+  BATCH_SIZE: 1
   ACC_BATCHES: 1
   AUGMENTATION: True
 
@@ -29,3 +33,6 @@ TRAIN:
 MODEL:
   DELTA_T_PREDICTION: 0.1 # Temporal resolution of scans
   N_PAST_STEPS: 10
+  WEIGHT: "/mydata/4dmos_ckpt/10_scans.ckpt"
+  
+  
