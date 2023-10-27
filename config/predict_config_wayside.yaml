@@ -1,12 +1,12 @@
 EXPERIMENT:
-  ID: "wayside_0825_mini" # Give your logs and model a unique name
+  ID: "0825ntu" # Give your logs and model a unique name
 
 ##Data
 DATA:
   TRANSFORM: False # If true, the points are pose-aligned before feeding to the model
   POSES: "no_poses" # Name of the pose file provided in each sequence folder
   SHUFFLE: False
-  NUM_WORKER: 8
+  NUM_WORKER: 16
   DELTA_T_DATA: 0.1 # Time between scans in the dataset (0.1s for KITTI)
   VOXEL_SIZE: 0.1 # Used for discretization in x,y,z when creating a sparse tensor 
   SEMANTIC_CONFIG_FILE: "./config/wayside.yaml" 
@@ -16,8 +16,9 @@ DATA:
     VAL:
       -
     TEST:
-      - 0
-  DATAPATH: "/mydata/0825mini/skitti-format/sequences/" #path/to/dataset/sequences
+      - 1
+  DATAPATH: "/mydata/0825ntu/skitti-format/sequences/" #path/to/dataset/sequences
+  OUTPUT: "/mydata/4DMOS_predictions/" #Output path of confidences
 ##Training
 TRAIN:
   MAX_EPOCH: 60
@@ -34,5 +35,10 @@ MODEL:
   DELTA_T_PREDICTION: 0.1 # Temporal resolution of scans
   N_PAST_STEPS: 10
   WEIGHT: "/mydata/4dmos_ckpt/10_scans.ckpt"
-  
-  
+C2L: #Confidence to label
+  CONFIDENCEPATH: "/mydata/4DMOS_predictions/0825ntu/no_poses/" #PATH Before confidences
+  STRATEGY: "bayes" #["non-overlapping", "bayes"]
+  SEQUENCE: 
+    - 1 #Test sequence
+  PRIOR: 0.5 #Moving prior for bayesian fusing
+  DT: 0.1 #Temporal resolution 

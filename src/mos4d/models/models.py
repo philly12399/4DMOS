@@ -35,7 +35,10 @@ class MOSNet(LightningModule):
         self.lr_decay = hparams["TRAIN"]["LR_DECAY"]
         self.weight_decay = hparams["TRAIN"]["WEIGHT_DECAY"]
         self.n_past_steps = hparams["MODEL"]["N_PAST_STEPS"]
-
+        try:
+            self.output = hparams["DATA"]["OUTPUT"]
+        except:
+            self.output = "./predictions"
         self.semantic_config = yaml.safe_load(open(hparams["DATA"]["SEMANTIC_CONFIG_FILE"]))
         self.n_classes = len(self.semantic_config["learning_map_inv"])
         self.ignore_index = [
@@ -44,9 +47,8 @@ class MOSNet(LightningModule):
         self.model = MOSModel(hparams, self.n_classes)
 
         self.MOSLoss = MOSLoss(self.n_classes, self.ignore_index)
-
+        
         self.ClassificationMetrics = ClassificationMetrics(self.n_classes, self.ignore_index)
-
     def getLoss(self, out: ME.TensorField, past_labels: list):
         loss = self.MOSLoss.compute_loss(out, past_labels)
         return loss
@@ -122,7 +124,7 @@ class MOSNet(LightningModule):
         for b in range(len(batch[0])):
             seq, idx, past_indices = meta[b]
             path = os.path.join(
-                "predictions",
+                self.output,
                 self.id,
                 self.poses,
                 "confidences",

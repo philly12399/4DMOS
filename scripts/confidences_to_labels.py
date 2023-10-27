@@ -14,40 +14,24 @@ from mos4d.datasets.utils import load_files
 
 @click.command()
 ### Add your options here
-@click.option("--path", "-p", type=str, help="path to predictions.", required=True)
 @click.option(
-    "--strategy",
-    "-s",
-    type=click.Choice(["non-overlapping", "bayes"]),
-    help="strategy to predict from confidences.",
-    default="non-overlapping",
+    "--config",
+    "-c",
+    type=str,
+    default="./config/predict_config_wayside.yaml",
+    help="config file.",
 )
-@click.option(
-    "--sequence",
-    "-seq",
-    type=int,
-    help="Run inference on a specific sequence. Otherwise, test split from SemanticKITTI is used.",
-    default=(11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21),
-    multiple=True,
-)
-@click.option(
-    "--prior",
-    "-prior",
-    type=float,
-    help="Moving prior for bayesian fusing.",
-    default=0.5,
-)
-@click.option(
-    "--dt",
-    "-dt",
-    type=float,
-    help="Temporal resolution that is used for prediction.",
-    default=0.1,
-)
-def main(path, strategy, sequence, prior, dt):
-    sequences = list(sequence)
-
-    semantic_config = yaml.safe_load(open("./config/semantic-kitti-mos.yaml"))
+def main(config):
+    cfg = yaml.safe_load(open(config))
+    path = cfg["C2L"]["CONFIDENCEPATH"]
+    strategy = cfg["C2L"]["STRATEGY"]
+    sequences = list( cfg["C2L"]["SEQUENCE"])
+    if(sequences == [None]):
+        print("Fill C2L SEQUENCE in config")
+        exit()
+    prior = float(cfg["C2L"]["PRIOR"])
+    dt =  float(cfg["C2L"]["DT"])
+    semantic_config = yaml.safe_load(open("./config/wayside.yaml"))
     strategy_str = strategy
     if strategy == "bayes":
         strategy_str = strategy_str + "_{:.3e}".format(float(prior))
