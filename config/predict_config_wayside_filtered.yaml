@@ -1,5 +1,5 @@
 EXPERIMENT:
-  ID: "0825ntu" # Give your logs and model a unique name
+  ID: "0825_filtered" # Give your logs and model a unique name
 
 ##Data
 DATA:
@@ -17,7 +17,7 @@ DATA:
       -
     TEST:
       - 02
-  DATAPATH: "/mydata/0825ntu/skitti-format/sequences/" #path/to/dataset/sequences
+  DATAPATH: "/mydata/0825_filtered/skitti-format/sequences/" #path/to/dataset/sequences
   OUTPUT: "/mydata/4DMOS_predictions/" #Output path of confidences
 ##Training
 TRAIN:
@@ -36,7 +36,7 @@ MODEL:
   N_PAST_STEPS: 10
   WEIGHT: "/mydata/4dmos_ckpt/10_scans.ckpt"
 C2L: #Confidence to label
-  CONFIDENCEPATH: "/mydata/4DMOS_predictions/0825ntu/no_poses/" #PATH Before confidences
+  CONFIDENCEPATH: "/mydata/4DMOS_predictions/0825_filtered/no_poses/" #PATH Before confidences
   STRATEGY: "bayes" #["non-overlapping", "bayes"]
   SEQUENCE: 
     - 02 #Test sequence
