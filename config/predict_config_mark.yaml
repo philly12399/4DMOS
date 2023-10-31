@@ -1,5 +1,5 @@
 EXPERIMENT:
-  ID: "0825ntu" # Give your logs and model a unique name
+  ID: "mark" # Give your logs and model a unique name
 
 ##Data
 DATA:
@@ -16,8 +16,8 @@ DATA:
     VAL:
       -
     TEST:
-      - 25
-  DATAPATH: "/mydata/0825ntu/skitti-format/sequences/" #path/to/dataset/sequences
+      - 1
+  DATAPATH: "/mydata/mark_data/sequences/" #path/to/dataset/sequences
   OUTPUT: "/mydata/4DMOS_predictions/" #Output path of confidences
 ##Training
 TRAIN:
@@ -36,9 +36,9 @@ MODEL:
   N_PAST_STEPS: 10
   WEIGHT: "/mydata/4dmos_ckpt/10_scans.ckpt"
 C2L: #Confidence to label
-  CONFIDENCEPATH: "/mydata/4DMOS_predictions/0825ntu/no_poses/" #PATH Before confidences
+  CONFIDENCEPATH: "/mydata/4DMOS_predictions/mark/no_poses/" #PATH Before confidences
   STRATEGY: "bayes" #["non-overlapping", "bayes"]
   SEQUENCE: 
-    - 25 #Test sequence
+    - 01 #Test sequence
   PRIOR: 0.5 #Moving prior for bayesian fusing
   DT: 0.1 #Temporal resolution 
